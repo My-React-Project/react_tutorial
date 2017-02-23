@@ -18,7 +18,8 @@ class Contacts extends React.Component {
         { name: "Betty", phone: "010-3412-3412" },
         { name: "Chalie", phone: "010-0382-3337" },
         { name: "David", phone: "010-4618-3827" },
-      ]
+      ],
+      selectedKey: -1
     };
   }
 
@@ -41,15 +42,41 @@ class Contacts extends React.Component {
     this.setState(newContact);
   }
 
+  onSelect(key) {
+    if(key==this.state.selectedKey) {
+      console.log("key select cancelled");
+      this.setState({
+        selectedKey: -1
+      });
+      return;
+    }
+    this.setState({
+      selectedKey: key
+    });
+    console.log(key + " is selected");
+  }
+
+  isSelected(key) {
+    if(this.state.selectedKey == key) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   render() {
     return (
       <div>
         <h1>Contacts</h1>
         <ul>
           {this.state.contactData.map((contact, i) => {
+            {/* isSelected : 선택되었는 지에 대한 체크는 바로 실행 되어야 함. */}
             return (<ContactInfo name = {contact.name}
                                  phone = {contact.phone}
-                                 key = {i}/>);
+                                 key = {i}
+                                 contactKey = {i}
+                                 isSelected = {this.isSelected.bind(this)(i)}
+                                 onSelect = {this.onSelect.bind(this)}/>);
 
           })}
         </ul>
@@ -60,9 +87,26 @@ class Contacts extends React.Component {
 }
 
 class ContactInfo extends React.Component {
+  handleClick() {
+    this.props.onSelect(this.props.contactKey);
+  }
+
   render() {
+    let selectedStyle = isSelect => {
+      if(!isSelect) return;
+
+      let style = {
+        fontWeight: 'bold',
+        backgroundColor: '#4efcd8'
+      }
+      return style;
+    }
+
     return(
-      <li>{this.props.name} {this.props.phone}</li>
+      <li style={selectedStyle(this.props.isSelected)}
+          onClick={this.handleClick.bind(this)}>
+          {this.props.name} {this.props.phone}
+      </li>
     );
   }
 }
