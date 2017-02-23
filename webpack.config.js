@@ -7,7 +7,7 @@ module.exports = {
 
   devServer: {
     inline: true,
-    port: 7777,
+    port: 8081,
     contentBase: __dirname + '/public/'
   },
 
@@ -15,7 +15,7 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
           cacheDirectory: true,
