@@ -6,6 +6,7 @@ class Content extends React.Component {
       <div>
         <h2>{ this.props.title }</h2>
         <p>{ this.props.body }</p>
+        { this.props.element }
       </div>
     )
   }
@@ -14,7 +15,8 @@ class Content extends React.Component {
 // props type 검증
 Content.propTypes = {
   title: React.PropTypes.string, // string type이 아닌 경우 error
-  body: React.PropTypes.string.isRequired //필수 props로 지정
+  body: React.PropTypes.string.isRequired, //필수 props로 지정
+  element: React.PropTypes.element
 };
 
 export default Content;

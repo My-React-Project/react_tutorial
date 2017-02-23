@@ -12,7 +12,8 @@ class App extends React.Component {
         */}
         <Header title={ this.props.headerTitle }/>
         <Content title={ this.props.contentTitle }
-                  body={ this.props.contentBody }/>
+                 body={ this.props.contentBody }
+                 element={ this.props.elementProps }/>
       </div>
     );
   }
@@ -22,7 +23,8 @@ class App extends React.Component {
 App.defaultProps = {
   headerTitle: 'Default Header',
   contentTitle: 'Default contentTitle',
-  contentBody: 'Default contentBody'
+  contentBody: 'Default contentBody',
+  elementProps: <a href="http://www.google.com">google</a> // element도 props값으로 설정 가능
 }
 
 export default App;
