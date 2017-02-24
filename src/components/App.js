@@ -42,6 +42,32 @@ class Contacts extends React.Component {
     this.setState(newContact);
   }
 
+  /* 데이터 제거
+    this.setState({
+      list: update(
+        this.state.list,
+        {
+          $splice: [[index, 1]]
+        }
+      )
+    })
+  */
+  deleteContact() {
+    if(this.state.selectedKey == -1) {
+      console.log("contact not selected");
+      return;
+    }
+    this.setState({
+      contactData: update(
+        this.state.contactData,
+        {
+          $splice: [[this.state.selectedKey, 1]]
+        }
+      ),
+      selectedKey: -1
+    });
+  }
+
   onSelect(key) {
     if(key==this.state.selectedKey) {
       console.log("key select cancelled");
@@ -81,6 +107,7 @@ class Contacts extends React.Component {
           })}
         </ul>
         <ContactCreator onInsert={this.addContact.bind(this)}/>
+        <ContactRemover onRemove={this.deleteContact.bind(this)}/>
       </div>
     );
   }
@@ -145,6 +172,20 @@ class ContactCreator extends React.Component {
         </p>
       </div>
     )
+  }
+}
+
+class ContactRemover extends React.Component {
+  handleClick() {
+    this.props.onRemove();
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick.bind(this)}>
+        Remove selected contact
+      </button>
+    );
   }
 }
 
