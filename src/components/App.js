@@ -19,7 +19,11 @@ class Contacts extends React.Component {
         { name: "Chalie", phone: "010-0382-3337" },
         { name: "David", phone: "010-4618-3827" },
       ],
-      selectedKey: -1
+      selectedKey: -1,
+      selected: {
+        name: "",
+        phone: ""
+      }
     };
   }
 
@@ -68,16 +72,53 @@ class Contacts extends React.Component {
     });
   }
 
+  /* 데이터 수정
+    this.setState({
+      list: update(
+        this.stae.list,
+        {
+          [index]: {
+            field: {$set: "value"},
+            field2: {$set: "value2"}
+          }
+        }
+      )
+    });
+  */
+  modifyContact(name, phone) {
+    this.setState({
+      contactData: update(
+        this.state.contactData,
+        {
+          [this.state.selectedKey]: {
+            name: { $set: name },
+            phone: { $set: phone }
+          }
+        }
+      ),
+      // modify input의 value값까지 바꿔주기 위해 변경
+      selected: {
+        name: name,
+        phone: phone
+      }
+    })
+  }
+
   onSelect(key) {
     if(key==this.state.selectedKey) {
       console.log("key select cancelled");
       this.setState({
-        selectedKey: -1
+        selectedKey: -1,
+        selected: {
+          name: "",
+          phone: ""
+        }
       });
       return;
     }
     this.setState({
-      selectedKey: key
+      selectedKey: key,
+      selected: this.state.contactData[key]
     });
     console.log(key + " is selected");
   }
@@ -93,7 +134,7 @@ class Contacts extends React.Component {
   render() {
     return (
       <div>
-        <h1>Contacts</h1>
+        <h1 id="hello">Contacts</h1>
         <ul>
           {this.state.contactData.map((contact, i) => {
             {/* isSelected : 선택되었는 지에 대한 체크는 바로 실행 되어야 함. */}
@@ -108,6 +149,9 @@ class Contacts extends React.Component {
         </ul>
         <ContactCreator onInsert={this.addContact.bind(this)}/>
         <ContactRemover onRemove={this.deleteContact.bind(this)}/>
+        <ContactEditor onEdit={this.modifyContact.bind(this)}
+                       contact={this.state.selected}
+                       isSelected={(this.state.selectedKey != -1)}/>
       </div>
     );
   }
@@ -185,6 +229,53 @@ class ContactRemover extends React.Component {
       <button onClick={this.handleClick.bind(this)}>
         Remove selected contact
       </button>
+    );
+  }
+}
+
+class ContactEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      phone: ""
+    };
+  }
+
+  handleClick() {
+    if(!this.props.isSelected) {
+      console.log("contact not selected");
+      return;
+    }
+    // contactEditor의 상위 컴포넌트에서 전달받은 onEdit props를 이용하여 데이터 수정
+    this.props.onEdit(this.state.name, this.state.phone);
+  }
+
+  handleChange(e) {
+    var nextState = {};
+    nextState[e.target.name] = e.target.value;
+    this.setState(nextState);
+  }
+
+  // 컴포넌트 업데이트 직전에 새로운 값을 받는 Component Life Cycle 메소드
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      name: nextProps.contact.name,
+      phone: nextProps.contact.phone
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <p>
+          <input type="text" name="name" placeholder="name"
+                 value={this.state.name} onChange={this.handleChange.bind(this)}/>
+          <input type="text" name="phone" placeholder="phone"
+                 value={this.state.phone} onChange={this.handleChange.bind(this)}/>
+          <button onClick={this.handleClick.bind(this)}>Edit</button>
+        </p>
+      </div>
     );
   }
 }
