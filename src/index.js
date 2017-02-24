@@ -9,4 +9,5 @@ const rootElement = document.getElementById('root');
 */
 ReactDOM.render(
   <App headerTitle = "Welcome!"
-                     contentBody = "Welcome to example app"/>, rootElement);
+       contentBody = "Welcome to example app"
+       name = "jaewoong"/>, rootElement);
