@@ -162,7 +162,17 @@ class ContactInfo extends React.Component {
     this.props.onSelect(this.props.contactKey);
   }
 
+  /*
+    불필요한 렌더링을 방지하기 위해 사용하는 Component Life Cycle 메소드
+    Component를 다시 렌더링 해야 하는 지 판단.
+  */
+  shouldComponentUpdate(nextProps, nextState) {
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
+  }
+
   render() {
+    console.log("rendered: " + this.props.name);
+
     let selectedStyle = isSelect => {
       if(!isSelect) return;
 
